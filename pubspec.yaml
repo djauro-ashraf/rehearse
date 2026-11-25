@@ -1,0 +1,34 @@
+name: rehearse
+description: "Loop, slow down and master any audio. A practice player for learners, musicians and memorisers."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.13.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management + dependency injection.
+  flutter_riverpod: ^3.5.0
+
+  # Playback (speed / pitch / seeking) and the system media notification.
+  just_audio: ^0.10.5
+  audio_service: ^0.18.18
+  audio_session: ^0.2.2
+
+  # Importing audio, storing data, sharing practice sheets.
+  file_picker: ^12.0.0
+  path_provider: ^2.1.5
+  path: ^1.9.1
+  crypto: ^3.0.6
+  share_plus: ^13.3.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
