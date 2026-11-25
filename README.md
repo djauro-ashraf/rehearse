@@ -52,16 +52,19 @@ flutter run            # Android device or emulator
 flutter test
 ```
 
-Built for Flutter 3.47 / Dart 3.13 and your Gradle 9.3.1 / AGP 9.1 / Kotlin 2.4
-setup.
+Built for Flutter 3.50 / Dart 3.14 with Gradle 9.5.0 / AGP 9.3.1 / Kotlin 2.4.20.
 
-* **Application id** is `app.rehearse`; change it in
-  `android/app/build.gradle.kts` before publishing.
+* **Application id** is `app.rehearse` with persistent Android release signing
+  configured (see [docs/RELEASING.md](docs/RELEASING.md)) so future APK releases
+  update cleanly on mobile without losing data.
+* **GitHub Releases:** pushing a version tag (for example `v1.0.1`) runs
+  `.github/workflows/release.yml` to verify tests, build a signed release APK,
+  and publish it on the repository's **Releases** page.
 * **iOS / desktop** aren't set up (engine and UI are portable; background audio
   and share-sheet wiring are Android-only for now). For iOS:
   `flutter create --platforms=ios .`, then add `audio` to `UIBackgroundModes`
   in `ios/Runner/Info.plist`.
-* **Material import:** Flutter 3.47 is moving Material into `material_ui`.
+* **Material import:** Flutter is moving Material into `material_ui`.
   Every file imports it through `lib/core/material.dart`, so adopting it later
   is a one-line change.
 
