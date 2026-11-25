@@ -15,6 +15,7 @@ migrate_working_dir/
 
 # Android
 /android/.gradle/
+/android/build/
 /android/local.properties
 /android/key.properties
 /android/app/debug
