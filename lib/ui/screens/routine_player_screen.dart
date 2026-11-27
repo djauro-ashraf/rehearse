@@ -9,6 +9,7 @@ import '../../engine/routine_runner.dart';
 import '../../state/app_providers.dart';
 import '../../state/engine_providers.dart';
 import '../../state/routine_controller.dart';
+import '../widgets/position_builder.dart';
 import '../theme.dart';
 import '../widgets/small_widgets.dart';
 
@@ -157,7 +158,16 @@ class RoutinePlayerScreen extends ConsumerWidget {
                     ),
             ),
           ),
-          const SizedBox(height: 16),
+          if (!finished && step != null) ...[
+            const SizedBox(height: 8),
+            _StepSeekBar(
+              startMs: s.loopStartMs ?? step.startMs,
+              endMs: s.loopEndMs ?? step.endMs,
+              // Seeking during the pause between steps would fight the wait.
+              enabled: !s.holding && !s.loading,
+            ),
+          ],
+          const SizedBox(height: 8),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
@@ -215,6 +225,85 @@ class RoutinePlayerScreen extends ConsumerWidget {
             ),
         ],
       ),
+    );
+  }
+}
+
+/// Slide to move around inside the current step (its loop, or the whole track
+/// for a whole-track step). Times are relative to the start of the step.
+class _StepSeekBar extends ConsumerStatefulWidget {
+  const _StepSeekBar({
+    required this.startMs,
+    required this.endMs,
+    required this.enabled,
+  });
+
+  final int startMs;
+  final int endMs;
+  final bool enabled;
+
+  @override
+  ConsumerState<_StepSeekBar> createState() => _StepSeekBarState();
+}
+
+class _StepSeekBarState extends ConsumerState<_StepSeekBar> {
+  /// Slider position (ms from the step start) while a finger is on it.
+  double? _drag;
+  DateTime _lastSeek = DateTime.fromMillisecondsSinceEpoch(0);
+
+  void _seek(double offsetMs) {
+    unawaited(ref.read(engineProvider).seekTo(widget.startMs + offsetMs.round()));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final length = math.max(1, widget.endMs - widget.startMs).toDouble();
+    final tenths = length < 60000;
+    final labelStyle = tabular(
+      Theme.of(context).textTheme.labelMedium?.copyWith(
+            color: Theme.of(context).colorScheme.onSurfaceVariant,
+          ),
+    );
+
+    return PositionBuilder(
+      builder: (context, position) {
+        final value = (_drag ?? (position - widget.startMs).toDouble()).clamp(0.0, length);
+        return Column(
+          children: [
+            Slider(
+              value: value,
+              max: length,
+              onChanged: widget.enabled
+                  ? (v) {
+                      setState(() => _drag = v);
+                      // Follow the finger, but not on every pixel.
+                      final now = DateTime.now();
+                      if (now.difference(_lastSeek).inMilliseconds > 120) {
+                        _lastSeek = now;
+                        _seek(v);
+                      }
+                    }
+                  : null,
+              onChangeEnd: widget.enabled
+                  ? (v) {
+                      _seek(v);
+                      setState(() => _drag = null);
+                    }
+                  : null,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(formatMs(value.round(), tenths: tenths), style: labelStyle),
+                  Text(formatMs(length.round(), tenths: tenths), style: labelStyle),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

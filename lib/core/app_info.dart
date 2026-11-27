@@ -1,5 +1,5 @@
 const String appName = 'Rehearse';
 const String appVersion = String.fromEnvironment(
   'APP_VERSION',
-  defaultValue: '1.0.0',
+  defaultValue: '1.0.1',
 );

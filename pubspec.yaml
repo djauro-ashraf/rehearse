@@ -1,7 +1,7 @@
 name: rehearse
 description: "Loop, slow down and master any audio. A practice player for learners, musicians and memorisers."
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: ^3.13.0

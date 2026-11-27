@@ -85,6 +85,7 @@ class _HomeShellState extends ConsumerState<HomeShell> with WidgetsBindingObserv
         mainAxisSize: MainAxisSize.min,
         children: [
           const MiniPlayer(),
+          Divider(height: 1, color: Theme.of(context).colorScheme.outlineVariant),
           NavigationBar(
             selectedIndex: _index,
             onDestinationSelected: (i) => setState(() => _index = i),

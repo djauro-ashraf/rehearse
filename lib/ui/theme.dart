@@ -72,7 +72,8 @@ ThemeData buildTheme(Brightness brightness) {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     ),
     navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: scheme.surfaceContainer,
+      backgroundColor: scheme.surface,
+      elevation: 0,
       indicatorColor: scheme.secondaryContainer,
       labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
     ),
